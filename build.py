@@ -150,13 +150,18 @@ def main():
         '--dev',
         action='store_true'
     )
+    parser.add_argument(
+        '--reuse-src',
+        action='store_true'
+    )
+
     args = parser.parse_args()
 
     # Set common variables
     source_tree = _ROOT_DIR / 'build' / 'src'
     downloads_cache = _ROOT_DIR / 'build' / 'download_cache'
 
-    if not args.ci or not (source_tree / 'BUILD.gn').exists():
+    if not args.reuse_src and (not args.ci or not (source_tree / 'BUILD.gn').exists()):
         # Setup environment
         source_tree.mkdir(parents=True, exist_ok=True)
         downloads_cache.mkdir(parents=True, exist_ok=True)
@@ -335,25 +340,28 @@ def main():
 
     if not args.ci or not (source_tree / 'out/Default').exists():
         # Output args.gn
-        (source_tree / 'out/Default').mkdir(parents=True)
-        gn_flags = (_ROOT_DIR / 'helium-chromium' / 'flags.gn').read_text(encoding=ENCODING)
-        gn_flags += '\n'
-        windows_flags = (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
-        if args.arm:
-            windows_flags = windows_flags.replace('x64', 'arm64')
-        if args.tarball:
-            windows_flags += '\nchrome_pgo_phase=0\n'
+        if not args.reuse_src:
+            (source_tree / 'out/Default').mkdir(parents=True)
+            gn_flags = (_ROOT_DIR / 'helium-chromium' / 'flags.gn').read_text(encoding=ENCODING)
+            gn_flags += '\n'
+            windows_flags = (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
+            if args.arm:
+                windows_flags = windows_flags.replace('x64', 'arm64')
+            if args.tarball:
+                windows_flags += '\nchrome_pgo_phase=0\n'
 
-        if shutil.which('sccache'):
-            windows_flags += 'cc_wrapper = "sccache"\n'
+            if shutil.which('sccache'):
+                windows_flags += 'cc_wrapper = "sccache"\n'
 
-        gn_flags += windows_flags
-        if args.dev:
-            gn_flags += 'is_component_build=true\n'
+            gn_flags += windows_flags
+            if args.dev:
+                gn_flags += 'is_component_build=true\n'
+            else:
+                gn_flags += 'is_official_build=true\n'
+
+            (source_tree / 'out/Default/args.gn').write_text(gn_flags, encoding=ENCODING)
         else:
-            gn_flags += 'is_official_build=true\n'
-
-        (source_tree / 'out/Default/args.gn').write_text(gn_flags, encoding=ENCODING)
+            print('Reusing src!')
 
     # Enter source tree to run build commands
     os.chdir(source_tree)
