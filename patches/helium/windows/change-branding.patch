@@ -9,15 +9,15 @@
  
 -const wchar_t kProductPathName[] = L"Chromium";
 +#if defined(OFFICIAL_BUILD)
-+const wchar_t kProductPathName[] = L"Helium";
++const wchar_t kProductPathName[] = L"Goobium";
 +#else
-+const wchar_t kProductPathName[] = L"Helium Dev";
++const wchar_t kProductPathName[] = L"Goobium Dev";
 +#endif
  
  const size_t kProductPathNameLength = _countof(kProductPathName) - 1;
  
 -const char kSafeBrowsingName[] = "chromium";
-+const char kSafeBrowsingName[] = "helium";
++const char kSafeBrowsingName[] = "Goobium";
  
  }  // namespace install_static
 --- a/chrome/install_static/chromium_install_modes.h
@@ -31,17 +31,17 @@
 -        .base_app_id = L"Chromium",                // A distinct base_app_id.
 -        .browser_prog_id_prefix = L"ChromiumHTM",  // Browser ProgID prefix.
 +            L"{FB68A146-637A-48C2-A0C4-1565DE45FEBD}",
-+        .base_app_name = L"Helium",              // A distinct base_app_name.
-+        .base_app_id = L"Helium",                // A distinct base_app_id.
-+        .browser_prog_id_prefix = L"HeliumHTM",  // Browser ProgID prefix.
++        .base_app_name = L"Goobium",              // A distinct base_app_name.
++        .base_app_id = L"Goobium",                // A distinct base_app_id.
++        .browser_prog_id_prefix = L"GoobiumHTM",  // Browser ProgID prefix.
          .browser_prog_id_description =
 -            L"Chromium HTML Document",         // Browser ProgID description.
 -        .pdf_prog_id_prefix = L"ChromiumPDF",  // PDF ProgID prefix.
-+            L"Helium HTML Document",         // Browser ProgID description.
-+        .pdf_prog_id_prefix = L"HeliumPDF",  // PDF ProgID prefix.
++            L"Goobium HTML Document",         // Browser ProgID description.
++        .pdf_prog_id_prefix = L"GoobiumPDF",  // PDF ProgID prefix.
          .pdf_prog_id_description =
 -            L"Chromium PDF Document",  // PDF ProgID description.
-+            L"Helium PDF Document",  // PDF ProgID description.
++            L"Goobium PDF Document",  // PDF ProgID description.
          .active_setup_guid =
 -            L"{7D2B3E1D-D096-4594-9D8F-A6667F12E0AC}",  // Active Setup
 +            L"{FB68A146-637A-48C2-A0C4-1565DE45FEBD}",  // Active Setup
